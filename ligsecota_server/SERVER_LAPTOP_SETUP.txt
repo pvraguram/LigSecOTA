@@ -1,0 +1,24 @@
+LIGSECOTA V1 — YOUR LAPTOP (CLOUD OTA SERVER)
+
+1. Extract this ZIP and open a terminal in the project folder.
+2. Install dependencies:
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install -r requirements.txt
+3. Generate the matching server and vehicle identity files ONCE:
+   python -m tools.provision --out provisioning_out
+4. Keep provisioning_out/server.json on your laptop. Securely copy only
+   provisioning_out/vehicle.json to your friend's Ubuntu VM project folder.
+   These files contain private keys; do not upload them publicly.
+5. Find your laptop's LAN IP:
+   ip -br addr
+6. Start the server and leave the terminal open:
+   python -m distributed.server_main --identity provisioning_out/server.json --bind 0.0.0.0 --port 8765
+7. Start the friend's vehicle process after the server is listening.
+
+Allow TCP port 8765 from your trusted local network only. Do not expose this
+classroom demo to the public internet. Keep both machines' clocks synchronized.
+Full instructions: DISTRIBUTED_V1_README.md
+
+DEMO AUDIT OUTPUT
+The updated build prints timestamped stage logs, message types and byte counts for TCP frames, certificate subject/serial/fingerprint, cryptographic algorithm names, firmware size/SHA-256, and short SHA-256 fingerprints for K_auth/K_dist. It deliberately NEVER prints raw private keys or raw session/distribution keys. In V1, K_auth is transported as RSA-OAEP/SHA-256-protected material and signed using RSA-PKCS1v1.5/SHA-256; AUTHZ_GRANT carries K_dist under AES-CBC + HMAC-MD5 protection; the firmware package uses AES-CBC + HMAC-MD5 with K_dist. This remains a demonstration implementation, not a production-secure transport.

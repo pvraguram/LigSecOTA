@@ -1,0 +1,23 @@
+LIGSECOTA V1 — FRIEND'S LAPTOP / UBUNTU VM (GATEWAY + ECU)
+
+1. Extract this ZIP in the Ubuntu VM and open a terminal in the project folder.
+2. Install dependencies:
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install -r requirements.txt
+3. Receive vehicle.json securely from the server laptop owner and place it in
+   this project folder. Do not generate your own identity file; it must match
+   the server identity generated in the same provisioning run.
+4. Ask the server laptop owner for their LAN IP address.
+5. Start the vehicle process after the server is listening:
+   python -m distributed.vehicle_main --identity vehicle.json --server-ip YOUR_LAPTOP_LAN_IP --port 8765
+6. The terminal should finish with:
+   installed_version=1
+   status=success
+
+This runs the gateway and ECU as software processes inside the VM. It is not
+physical CAN-FD hardware or a physical ECU. Keep both machines' clocks
+synchronized. Full instructions: DISTRIBUTED_V1_README.md
+
+DEMO AUDIT OUTPUT
+The updated build prints timestamped stage logs, message types and byte counts for TCP frames, certificate subject/serial/fingerprint, cryptographic algorithm names, firmware size/SHA-256, and short SHA-256 fingerprints for K_auth/K_dist. It deliberately NEVER prints raw private keys or raw session/distribution keys. In V1, K_auth is transported as RSA-OAEP/SHA-256-protected material and signed using RSA-PKCS1v1.5/SHA-256; AUTHZ_GRANT carries K_dist under AES-CBC + HMAC-MD5 protection; the firmware package uses AES-CBC + HMAC-MD5 with K_dist. This remains a demonstration implementation, not a production-secure transport.
